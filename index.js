@@ -1,4 +1,3 @@
-const fs = require('fs');
 const Promise = require("bluebird");
 
 const Discord = require('discord.js');
@@ -7,9 +6,11 @@ const client = new Discord.Client();
 const TarnationFixer = require('./tarnationFixer');
 const fixer = new TarnationFixer.Fixer();
 
-const config = require('./config.json');
-
-const readFilePromise = Promise.promisify(fs.readFile);
+try {
+  const config = require('./config.json');
+} catch (ex) {
+  console.error(`Error while loading config. Does config.json exist?`);
+}
 
 let censoringMessages = true;
 
