@@ -9,7 +9,7 @@ module.exports.Fixer = class Fixer {
         let result = string.toLowerCase();
         for (let i = 0; i < Object.keys(censoredPhrases).length; i++)
         {
-            if (string.includes(Object.keys(censoredPhrases)[i])) return true
+            if (result.includes(Object.keys(censoredPhrases)[i])) return true
         }
         return false;
     }
