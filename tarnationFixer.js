@@ -1,24 +1,59 @@
 const fs = require('fs');
 
-const censoredPhrases = require("./data/censored-phrases.json")
-
 module.exports.Fixer = class Fixer {
-    constructor() {}
-    
-    //TODO: return bad phrase info for use in replacement function, so we don't repeat work
+
+    constructor(censoredPhrases) {
+        this.specialCharExp = /[\.\^\$\*\+\?\(\)\[\{\\\|\-]/;
+        this.globalSpecialCharExp = new RegExp(this.specialCharExp, 'g');
+        
+        this.censoredPhrases = censoredPhrases;
+        this.verifyPhrases();
+    }
+
+    verifyPhrases()
+    {
+        for (const phraseKey in this.censoredPhrases)
+        {
+            //console.log(`Key: ${key}, Value: ${this.censoredPhrases[key]}`)
+            if (this.specialCharExp.test(phraseKey))
+            {
+                //console.log('found special chars!')
+                let newPhraseKey = phraseKey.replace(this.globalSpecialCharExp, "")
+                this.censoredPhrases[newPhraseKey] = this.censoredPhrases[phraseKey]
+                //console.log(`Deleted old key. New key: ${newPhraseKey}`)
+                delete this.censoredPhrases[phraseKey];
+            }
+        }
+
+        console.log('Verified phrases.')
+        /*
+        console.log('final results:')
+        for (const phraseKey in this.censoredPhrases)
+        {
+            console.log(`Key: ${phraseKey}, Value: ${this.censoredPhrases[phraseKey]}`)
+        }
+        */
+    }
+
     checkForBadPhrases(string) {
         let result = string.toLowerCase();
-        for (let i = 0; i < Object.keys(censoredPhrases).length; i++)
+
+        for (let i = 0; i < Object.keys(this.censoredPhrases).length; i++)
         {
-            if (result.includes(Object.keys(censoredPhrases)[i])) return true
+            if (result.includes(Object.keys(this.censoredPhrases)[i])) return true
         }
+
         return false;
     }
 
     replaceBadPhrases(string) {
         let result = string.toLowerCase();
-        Object.keys(censoredPhrases)
-            .forEach(phrase => result = result.split(phrase).join(censoredPhrases[phrase]));
+
+        for (const phraseKey in this.censoredPhrases)
+        {
+            result = result.replace(new RegExp(phraseKey, 'g'), this.censoredPhrases[phraseKey]);
+        }
+
         return result;
     }
 }

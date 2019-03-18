@@ -3,8 +3,10 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+const censoredPhrases = require("./data/censored-phrases.json")
+
 const TarnationFixer = require('./tarnationFixer');
-const fixer = new TarnationFixer.Fixer();
+const fixer = new TarnationFixer.Fixer(censoredPhrases);
 
 const config = require('./config.json');
 
