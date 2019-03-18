@@ -47,11 +47,12 @@ module.exports.Fixer = class Fixer {
     }
 
     replaceBadPhrases(string) {
-        let result = string.toLowerCase();
+        
+        let result = string;
 
         for (const phraseKey in this.censoredPhrases)
         {
-            result = result.replace(new RegExp(phraseKey, 'g'), this.censoredPhrases[phraseKey]);
+            result = result.replace(new RegExp(phraseKey, 'gi',), this.censoredPhrases[phraseKey]);
         }
 
         return result;
